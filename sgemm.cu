@@ -128,6 +128,10 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
       }
     }
+    else { // Warmup cuBLAS kernel before timing 
+      run_kernel(kernel_num, m, n, k, alpha, dA, dB, beta, dC, handle);
+    }
+    
 
     cudaEventRecord(beg);
     for (int j = 0; j < repeat_times; j++) {

@@ -20,18 +20,20 @@ ln -s build/compile_commands.json
 
 ### cuBLAS (Reference)
 ```bash
+Running kernel 0 on device 0.
+Max size: 4096
 dimensions(m=n=k) 128, alpha: 0.5, beta: 3
-Average elapsed time: (0.000707) s, performance: (    5.9) GFLOPS. size: (128).
+Average elapsed time: (0.000006) s, performance: (  699.0) GFLOPS. size: (128).
 dimensions(m=n=k) 256, alpha: 0.5, beta: 3
-Average elapsed time: (0.000010) s, performance: ( 3295.1) GFLOPS. size: (256).
+Average elapsed time: (0.000009) s, performance: ( 3668.1) GFLOPS. size: (256).
 dimensions(m=n=k) 512, alpha: 0.5, beta: 3
-Average elapsed time: (0.000043) s, performance: ( 6210.3) GFLOPS. size: (512).
+Average elapsed time: (0.000041) s, performance: ( 6508.0) GFLOPS. size: (512).
 dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
-Average elapsed time: (0.000227) s, performance: ( 9468.8) GFLOPS. size: (1024).
+Average elapsed time: (0.000226) s, performance: ( 9487.7) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
-Average elapsed time: (0.001639) s, performance: (10482.1) GFLOPS. size: (2048).
+Average elapsed time: (0.001655) s, performance: (10380.3) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
-Average elapsed time: (0.012720) s, performance: (10805.3) GFLOPS. size: (4096).
+Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 ```
 
 ### Naive - Kernel 1 
