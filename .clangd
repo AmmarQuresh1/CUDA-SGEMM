@@ -1,2 +1,12 @@
 Diagnostics:
   Suppress: [misc-include-cleaner]
+CompileFlags:
+  Remove:
+    - -forward-unknown-to-host-compiler
+    - -ccbin=*
+    - --options-file
+    - --options-file=*
+    - --generate-code=*
+    - -rdc=*
+  Add:
+    - --cuda-gpu-arch=sm_86
