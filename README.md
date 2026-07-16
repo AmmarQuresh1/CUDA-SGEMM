@@ -8,5 +8,7 @@
 mkdir build && cd build
 cmake ..
 cmake --build . 
+cd ..
+ln -s build/compile_commands.json
 ./sgemm {kernel_number - 0 for cuBLAS, 1 for naive, etc.}
 ```
