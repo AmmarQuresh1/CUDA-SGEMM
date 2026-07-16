@@ -18,7 +18,7 @@ ln -s build/compile_commands.json
     - Matrices: $A$, $B$ and $C$, randomised and increasing in size (128, 256, 512, 1024, 2048, 4096)
     - Scalar constants: $\alpha$ = 0.5 and $\beta$ = 3.0
 
-### cuBLASS (Reference)
+### cuBLAS (Reference)
 ```bash
 dimensions(m=n=k) 128, alpha: 0.5, beta: 3
 Average elapsed time: (0.000707) s, performance: (    5.9) GFLOPS. size: (128).
