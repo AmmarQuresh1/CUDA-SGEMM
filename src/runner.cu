@@ -161,6 +161,15 @@ void run_sgemm_naive(int M, int N, int K, float alpha, float *A, float *B,
   sgemm_naive<<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
 }
 
+void run_sgemm_coalesce(int M, int N, int K, float alpha, float *A, float *B, float beta, float *C) {
+  constexpr int BLOCK_SIZE = 16;
+  // gridDim stays the same
+  dim3 gridDim(CEIL_DIV(M, BLOCK_SIZE), CEIL_DIV(N, BLOCK_SIZE), 1);
+  // make blockDim 1-dimensional, but don't change number of threads
+  dim3 blockDim(BLOCK_SIZE * BLOCK_SIZE);
+  sgemm_coalescing<BLOCK_SIZE><<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+}
+
 
 void run_kernel(int kernel_num, int M, int N, int K, float alpha, float *A,
                 float *B, float beta, float *C, cublasHandle_t handle) {
@@ -171,7 +180,9 @@ void run_kernel(int kernel_num, int M, int N, int K, float alpha, float *A,
   case 1:
     run_sgemm_naive(M, N, K, alpha, A, B, beta, C);
     break;
-
+  case 2:
+    run_sgemm_coalesce(M, N, K, alpha, A, B, beta, C);
+    break;
   default:
     throw std::invalid_argument("Unknown kernel number");
   }
