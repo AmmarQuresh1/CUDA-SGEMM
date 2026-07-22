@@ -38,6 +38,7 @@ Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 
 ### Naive - Kernel 1 
 **Performance relative to cuBLAS - 2.63%**
+- Naive implementation where each thread loads different row
 - Improved performance ~1.95x by changing threads per block from 1024 to 256. This better utilises the 3060Ti's capability of 1536 threads per SM.
 ```bash
 Running kernel 1 on device 0.
@@ -54,4 +55,24 @@ dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
 Average elapsed time: (0.061056) s, performance: (  281.4) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
+```
+
+### Global Memory Coalescing - Kernel 2
+**Performance relative to cuBLAS - 8.71%**
+- Each thread in a warp access consecutive values per iteration enabling coalescing.
+```bash
+Running kernel 2 on device 0.
+Max size: 4096
+dimensions(m=n=k) 128, alpha: 0.5, beta: 3
+Average elapsed time: (0.000009) s, performance: (  477.3) GFLOPS. size: (128).
+dimensions(m=n=k) 256, alpha: 0.5, beta: 3
+Average elapsed time: (0.000043) s, performance: (  772.2) GFLOPS. size: (256).
+dimensions(m=n=k) 512, alpha: 0.5, beta: 3
+Average elapsed time: (0.000284) s, performance: (  946.6) GFLOPS. size: (512).
+dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
+Average elapsed time: (0.002140) s, performance: ( 1003.5) GFLOPS. size: (1024).
+dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
+Average elapsed time: (0.017167) s, performance: ( 1000.8) GFLOPS. size: (2048).
+dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
+Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 ```
