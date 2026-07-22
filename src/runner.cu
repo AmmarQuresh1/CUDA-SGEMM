@@ -151,10 +151,11 @@ void runCublasTF32(cublasHandle_t handle, int M, int N, int K, float alpha,
 
 void run_sgemm_naive(int M, int N, int K, float alpha, float *A, float *B,
                      float beta, float *C) {
+  constexpr int BLOCK_SIZE = 16;
   // create as many blocks as necessary to map all of C
-  dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32), 1);
-  // 32 * 32 = 1024 thread per block
-  dim3 blockDim(32, 32, 1);
+  dim3 gridDim(CEIL_DIV(M, BLOCK_SIZE), CEIL_DIV(N, BLOCK_SIZE), 1);
+  // 16 * 16 = 256 threads per block
+  dim3 blockDim(BLOCK_SIZE, BLOCK_SIZE, 1);
   // launch the asynchronous execution of the kernel on the device
   // The function call returns immediately on the host
   sgemm_naive<<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
