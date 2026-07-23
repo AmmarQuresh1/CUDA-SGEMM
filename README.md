@@ -76,3 +76,22 @@ Average elapsed time: (0.017167) s, performance: ( 1000.8) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 ```
+
+### Shared Memory Cache-Blocking - Kernel 3
+**Performance relative to cuBLAS - 14.52%**
+```bash
+Running kernel 3 on device 0.
+Max size: 4096
+dimensions(m=n=k) 128, alpha: 0.5, beta: 3
+Average elapsed time: (0.000009) s, performance: (  493.4) GFLOPS. size: (128).
+dimensions(m=n=k) 256, alpha: 0.5, beta: 3
+Average elapsed time: (0.000029) s, performance: ( 1151.5) GFLOPS. size: (256).
+dimensions(m=n=k) 512, alpha: 0.5, beta: 3
+Average elapsed time: (0.000201) s, performance: ( 1337.8) GFLOPS. size: (512).
+dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
+Average elapsed time: (0.001552) s, performance: ( 1383.6) GFLOPS. size: (1024).
+dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
+Average elapsed time: (0.011109) s, performance: ( 1546.5) GFLOPS. size: (2048).
+dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
+Average elapsed time: (0.088520) s, performance: ( 1552.6) GFLOPS. size: (4096).
+```
