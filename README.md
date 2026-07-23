@@ -17,6 +17,7 @@ ln -s build/compile_commands.json
 - The general matrix multiplication formula is defined as: $C = \alpha \cdot (A \cdot B) + \beta \cdot C$
     - Matrices: $A$, $B$ and $C$, randomised and increasing in size (128, 256, 512, 1024, 2048, 4096)
     - Scalar constants: $\alpha$ = 0.5 and $\beta$ = 3.0
+- Improved performance up to ~1.95x (kernel 1) by changing threads per block from 1024 to 256. This better utilises the 3060Ti's capability of 1536 threads per SM.
 
 ### cuBLAS (Reference)
 ```bash
@@ -39,7 +40,6 @@ Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 ### Naive - Kernel 1 
 **Performance relative to cuBLAS - 2.63%**
 - Naive implementation where each thread loads different row
-- Improved performance ~1.95x by changing threads per block from 1024 to 256. This better utilises the 3060Ti's capability of 1536 threads per SM.
 ```bash
 Running kernel 1 on device 0.
 Max size: 4096
