@@ -12,6 +12,15 @@ ln -s build/compile_commands.json
 ./sgemm {kernel_number - 0 for cuBLAS, 1 for naive, etc.}
 ```
 
+## Profiling
+```bash
+// profiles once for 4096 size kernel 
+ncu --set basic --launch-count 1 --launch-skip 300 -o profiles/{name} -f ./sgemm {kernel_num}
+
+// read profiler report
+ncu --import profiles/{report} > profiles/{name}.txt
+```
+
 ## Results
 - Benchmarked using a 3060Ti
 - The general matrix multiplication formula is defined as: $C = \alpha \cdot (A \cdot B) + \beta \cdot C$
@@ -20,6 +29,10 @@ ln -s build/compile_commands.json
 - Improved performance up to ~1.95x (kernel 1) by changing threads per block from 1024 to 256. This better utilises the 3060Ti's capability of 1536 threads per SM.
 
 ### cuBLAS (Reference)
+
+L1/TEX Cache Throughput (57.95%) & Memory Throughput (57.84%). Achieved Occupancy (33.14%).
+Compute-bound reference.
+
 ```bash
 Running kernel 0 on device 0.
 Max size: 4096
@@ -39,7 +52,10 @@ Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 
 ### Naive - Kernel 1 
 **Performance relative to cuBLAS - 2.63%**
-- Naive implementation where each thread loads different row
+
+L1/TEX Cache Throughput (99.93%) and Memory Throughput (99.81%) maxed, memory-bound instead of compute-bound.
+Achieved Occupancy (88.13%).
+
 ```bash
 Running kernel 1 on device 0.
 Max size: 4096
@@ -59,7 +75,10 @@ Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
 
 ### Global Memory Coalescing - Kernel 2
 **Performance relative to cuBLAS - 8.71%**
-- Each thread in a warp access consecutive values per iteration enabling coalescing.
+
+L1/TEX Cache Throughput (85.13%) & Memory Throughput (85%) still high, memory-bound.
+Achieved Occupancy (99.86%).
+
 ```bash
 Running kernel 2 on device 0.
 Max size: 4096
@@ -79,6 +98,11 @@ Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 
 ### Shared Memory Cache-Blocking - Kernel 3
 **Performance relative to cuBLAS - 14.52%**
+
+L1/TEX Cache Throughput (97.52%) & Memory Throughput (97.50%), still memory-bound.
+Achieved Occupancy (99.82%).
+
+
 ```bash
 Running kernel 3 on device 0.
 Max size: 4096
