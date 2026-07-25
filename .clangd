@@ -8,5 +8,6 @@ CompileFlags:
     - --options-file=*
     - --generate-code=*
     - -rdc=*
+    - --ptxas-options=-v
   Add:
     - --cuda-gpu-arch=sm_86
