@@ -14,19 +14,30 @@ ln -s build/compile_commands.json
 
 ## Profiling
 ```bash
-// profiles once for 4096 size kernel 
-ncu --set basic --launch-count 1 --launch-skip 300 -o profiles/{name} -f ./sgemm {kernel_num}
+// profiles once for 4096 size kernel
+ncu --set basic --section WarpStateStats --section SchedulerStats --section InstructionStats --launch-count 1 --launch-skip 300 -o profiles/{name} -f ./sgemm {kernel_num}
 
 // read profiler report
 ncu --import profiles/{report} > profiles/{name}.txt
 ```
 
 ## Results
-- Benchmarked using a 3060Ti
-- The general matrix multiplication formula is defined as: $C = \alpha \cdot (A \cdot B) + \beta \cdot C$
-    - Matrices: $A$, $B$ and $C$, randomised and increasing in size (128, 256, 512, 1024, 2048, 4096)
-    - Scalar constants: $\alpha$ = 0.5 and $\beta$ = 3.0
-- Improved performance up to ~1.95x (kernel 1) by changing threads per block from 1024 to 256. This better utilises the 3060Ti's capability of 1536 threads per SM.
+**Benchmarked using a 3060Ti:**
+| **Property** | **RTX 3060 Ti (compute 8.6)** |
+| --- | --- |
+| Number of SMs | 38 |
+| Max threads per SM | 1536 |
+| Hardware max L1/Shared Memory per SM | 128 KB |
+| Max configurable shared memory per SM | 0, 8, 16, 32, 64 or 100 KB per SM |
+| Max warps per SM | 48 |
+| | |
+
+The general matrix multiplication formula is defined as: $C = \alpha \cdot (A \cdot B) + \beta \cdot C$:
+- Matrices: $A$, $B$ and $C$, randomised and increasing in size (128, 256, 512, 1024, 2048, 4096)
+- Scalar constants: $\alpha$ = 0.5 and $\beta$ = 3.0
+
+Improved performance for kernels 1-3  (~1.95x speedup kernel 1) by changing threads per block from 1024 to 256. 
+This better utilises the 3060Ti's capability of 1536 threads per SM.
 
 ### cuBLAS (Reference)
 
@@ -56,6 +67,8 @@ Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 L1/TEX Cache Throughput (99.93%) and Memory Throughput (99.81%) maxed, memory-bound instead of compute-bound.
 Achieved Occupancy (88.13%).
 
+Uncoalesced access wastes loaded data from GMEM as the warp does not use the entire fetched contiguous sector.
+
 ```bash
 Running kernel 1 on device 0.
 Max size: 4096
@@ -78,6 +91,8 @@ Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
 
 L1/TEX Cache Throughput (85.13%) & Memory Throughput (85%) still high, memory-bound.
 Achieved Occupancy (99.86%).
+
+Kernel 2's warps fully utilise the fetched sector from GMEM but each thread still reads from global memory which can be improved by caching into SMEM. 
 
 ```bash
 Running kernel 2 on device 0.
@@ -102,6 +117,17 @@ Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 L1/TEX Cache Throughput (97.52%) & Memory Throughput (97.50%), still memory-bound.
 Achieved Occupancy (99.82%).
 
+Shared memory: 2048B/Block + 1024B/Block for CUDA runtime usage = 3072B/Block
+Theoretical maximum blocks per SM: 101376B / 3072B = 33 blocks
+Configured SMEM maximum blocks per SM: 32,768B / 3072B = 10 blocks 
+
+Threads: 256 threads per block, max 1536 threads per SM -> up to 6 blocks
+
+Registers: 40 regs per thread * 32 threads per warp = 1280 regs per warp. Register allocation granularity 256 regs per warp, 256*5 = 1280 so no need to round up. 256 threads per block, 256/32 = 8 warps per block, so 8 * 1280 = 10,240 regs per block. Utilised 61,440 regs per SM as up to 6 blocks per SM. 
+
+The kernel is limited by the number of threads per block and registers per thread as we cannot load more than 6 blocks per SM. The number of active warps is 48 (warps per block * max blocks per SM), this is the same as the 48 max active warps giving an occupancy of ~100%.
+
+Each warp spends 24.1 cycles (out of the 53.10 cycles per issued instruction) being stalled waiting for the MIO instruction queue to not be full. The scheduler allocated 11.98 warps out of the maximum 12 but only 1.06 warps were eligible per cycle with No Eligible at 77.45%. Warps spend almost half their cycles waiting to issue, with 11.98 active warps the scheduler will wait 4.4 cycles before it can issue the next warp's instructions. The bottleneck for this kernel then comes from the high usage of SMEM instructions. 
 
 ```bash
 Running kernel 3 on device 0.
