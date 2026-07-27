@@ -40,7 +40,8 @@ The general matrix multiplication formula is defined as: $C = \alpha \cdot (A \c
 Improved performance for kernels 1-3  (~1.95x speedup kernel 1) by changing threads per block from 1024 to 256. 
 This better utilises the 3060Ti's capability of 1536 threads per SM.
 
-### cuBLAS (Reference) | 10691.2 GFLOPs/s
+### cuBLAS (Reference) 
+**10691.2 GFLOPs/s**
 
 L1/TEX Cache Throughput (57.95%) & Memory Throughput (57.84%). Achieved Occupancy (33.14%).
 Compute-bound reference.
@@ -62,7 +63,8 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 ```
 
-### Naive - Kernel 1 | 282.0 GFLOPs/s
+### Naive - Kernel 1 
+**282.0 GFLOPs/s**
 **Performance relative to cuBLAS - 2.63%**
 
 L1/TEX Cache Throughput (99.93%) and Memory Throughput (99.81%) maxed, memory-bound instead of compute-bound.
@@ -87,7 +89,8 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
 ```
 
-### Global Memory Coalescing - Kernel 2 | 931.1 GFLOPs/s
+### Global Memory Coalescing - Kernel 2 
+**931.1 GFLOPs/s**
 **Performance relative to cuBLAS - 8.71%**
 
 L1/TEX Cache Throughput (85.13%) & Memory Throughput (85%) still high, memory-bound.
@@ -112,7 +115,8 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 ```
 
-### Shared Memory Cache-Blocking - Kernel 3 | 1552.6 GFLOPs/s
+### Shared Memory Cache-Blocking - Kernel 3 
+**1552.6 GFLOPs/s**
 **Performance relative to cuBLAS - 14.52%**
 
 L1/TEX Cache Throughput (97.52%) & Memory Throughput (97.50%), still memory-bound.
@@ -147,7 +151,8 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.088520) s, performance: ( 1552.6) GFLOPS. size: (4096).
 ```
 
-### 1D Blocktiling for Calculating Multiple Results per Thread - Kernel 4 | 4372.3 GFLOPs/s
+### 1D Blocktiling for Calculating Multiple Results per Thread - Kernel 4 
+**4372.3 GFLOPs/s**
 **Performance relative to cuBLAS - 40.90%**
 
 L1/TEX Cache Throughput (81.71%) & Memory Throughput (81.50%), still memory-bound.
