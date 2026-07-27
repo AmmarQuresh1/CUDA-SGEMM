@@ -177,6 +177,17 @@ void run_sgemm_shared_mem_block(int M, int N, int K, float alpha, float *A, floa
   sgemm_shared_mem_block<BLOCK_SIZE><<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
 }
 
+void run_sgemm_1d_blocktiling(int M, int N, int K, float alpha, float *A, float *B, float beta, float *C) {
+  const uint BM = 64; 
+  const uint BN = 64; 
+  const uint BK = 8;
+  const uint TM = 8;
+  dim3 gridDim(CEIL_DIV(N, BN), CEIL_DIV(M, BM)); // at max_size M = N = K = 4096
+  dim3 blockDim((BM * BN) / TM); // 512 blocksize this time fits better into the 3060Ti's 1536 threads
+  sgemm_1d_blocktiling<BM, BN, BK, TM><<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+}
+
+
 void run_kernel(int kernel_num, int M, int N, int K, float alpha, float *A,
                 float *B, float beta, float *C, cublasHandle_t handle) {
   switch (kernel_num) {
@@ -191,6 +202,9 @@ void run_kernel(int kernel_num, int M, int N, int K, float alpha, float *A,
     break;
   case 3:
     run_sgemm_shared_mem_block(M, N, K, alpha, A, B, beta, C);
+    break;
+  case 4:
+    run_sgemm_1d_blocktiling(M, N, K, alpha, A, B, beta, C);
     break;
   default:
     throw std::invalid_argument("Unknown kernel number");
