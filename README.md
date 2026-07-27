@@ -65,6 +65,7 @@ Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 
 ### Naive - Kernel 1 
 **282.0 GFLOPs/s**
+
 **Performance relative to cuBLAS - 2.63%**
 
 L1/TEX Cache Throughput (99.93%) and Memory Throughput (99.81%) maxed, memory-bound instead of compute-bound.
@@ -91,6 +92,7 @@ Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
 
 ### Global Memory Coalescing - Kernel 2 
 **931.1 GFLOPs/s**
+
 **Performance relative to cuBLAS - 8.71%**
 
 L1/TEX Cache Throughput (85.13%) & Memory Throughput (85%) still high, memory-bound.
@@ -117,6 +119,7 @@ Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 
 ### Shared Memory Cache-Blocking - Kernel 3 
 **1552.6 GFLOPs/s**
+
 **Performance relative to cuBLAS - 14.52%**
 
 L1/TEX Cache Throughput (97.52%) & Memory Throughput (97.50%), still memory-bound.
@@ -153,6 +156,7 @@ Average elapsed time: (0.088520) s, performance: ( 1552.6) GFLOPS. size: (4096).
 
 ### 1D Blocktiling for Calculating Multiple Results per Thread - Kernel 4 
 **4372.3 GFLOPs/s**
+
 **Performance relative to cuBLAS - 40.90%**
 
 L1/TEX Cache Throughput (81.71%) & Memory Throughput (81.50%), still memory-bound.
