@@ -7,11 +7,11 @@ Implementing Simon Boehm's CUDA Matmul Kernel Worklog, starting with naive kerne
 
 | Kernel | Technique | RTX 4070 Ti | RTX 3060 Ti |
 | --- | --- | ---: | ---: |
-| 0 | cuBLAS reference | 28,027.8 | 10,691.2 |
-| 1 | Naive | 339.9 | 282.0 |
-| 2 | Global memory coalescing | 534.6 | 931.1 |
-| 3 | Shared-memory cache blocking | 1,496.4 | 1,552.6 |
-| 4 | 1D block tiling | 1,463.2 | 4,372.3 |
+| 0 | cuBLAS reference | 28,033.6 | 10,691.2 |
+| 1 | Naive | 628.1 | 282.0 |
+| 2 | Global memory coalescing | 1,082.7 | 931.1 |
+| 3 | Shared-memory cache blocking | 2,514.2 | 1,552.6 |
+| 4 | 1D block tiling | 9,893.8 | 4,372.3 |
 
 ## Build instructions
 ```bash
@@ -70,7 +70,7 @@ This better utilises the 3060Ti's capability of 1536 threads per SM.
 Compute-bound reference.
 
 #### 4070Ti
-**28027.8 GFLOPs/s**
+**28033.6 GFLOPs/s**
 
 L1/TEX Cache Throughput (58.73%) & Memory Throughput (55.36%). Achieved Occupancy (99.69%).
 
@@ -78,18 +78,18 @@ L1/TEX Cache Throughput (58.73%) & Memory Throughput (55.36%). Achieved Occupanc
 Running kernel 0 on device 0.
 Max size: 4096
 dimensions(m=n=k) 128, alpha: 0.5, beta: 3
-Average elapsed time: (0.000287) s, performance: (   14.6) GFLOPS. size: (128).
+Average elapsed time: (0.000007) s, performance: (  561.1) GFLOPS. size: (128).
 dimensions(m=n=k) 256, alpha: 0.5, beta: 3
-Average elapsed time: (0.000137) s, performance: (  244.7) GFLOPS. size: (256).
+Average elapsed time: (0.000006) s, performance: ( 5168.5) GFLOPS. size: (256).
 dimensions(m=n=k) 512, alpha: 0.5, beta: 3
-Average elapsed time: (0.000327) s, performance: (  821.8) GFLOPS. size: (512).
+Average elapsed time: (0.000022) s, performance: (12238.3) GFLOPS. size: (512).
 dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
 ==PROF== Profiling "ampere_sgemm_128x64_nn" - 0 (1/1): 0%....50%....100% - 16 passes
-Average elapsed time: (0.012814) s, performance: (  167.6) GFLOPS. size: (1024).
+Average elapsed time: (0.000099) s, performance: (21638.0) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
-Average elapsed time: (0.000659) s, performance: (26054.0) GFLOPS. size: (2048).
+Average elapsed time: (0.000659) s, performance: (26061.3) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
-Average elapsed time: (0.004904) s, performance: (28027.8) GFLOPS. size: (4096).
+Average elapsed time: (0.004903) s, performance: (28033.6) GFLOPS. size: (4096).
 ```
 
 
@@ -119,9 +119,9 @@ Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 Uncoalesced access wastes loaded data from GMEM as the warp does not use the entire fetched contiguous sector.
 
 #### 4070Ti
-**339.9 GFLOPs/s**
+**628.1 GFLOPs/s**
 
-**Performance relative to cuBLAS - 1.21%**
+**Performance relative to cuBLAS - 2.24%**
 
 L1/TEX Cache Throughput (99.95%) and Memory Throughput (99.83%) maxed, memory-bound instead of compute-bound.
 Achieved Occupancy (87.59%).
@@ -130,18 +130,18 @@ Achieved Occupancy (87.59%).
 Running kernel 1 on device 0.
 Max size: 4096
 dimensions(m=n=k) 128, alpha: 0.5, beta: 3
-Average elapsed time: (0.000123) s, performance: (   34.2) GFLOPS. size: (128).
+Average elapsed time: (0.000014) s, performance: (  291.8) GFLOPS. size: (128).
 dimensions(m=n=k) 256, alpha: 0.5, beta: 3
-Average elapsed time: (0.000113) s, performance: (  296.0) GFLOPS. size: (256).
+Average elapsed time: (0.000066) s, performance: (  507.9) GFLOPS. size: (256).
 dimensions(m=n=k) 512, alpha: 0.5, beta: 3
-Average elapsed time: (0.000495) s, performance: (  541.9) GFLOPS. size: (512).
+Average elapsed time: (0.000458) s, performance: (  586.6) GFLOPS. size: (512).
 dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
-Average elapsed time: (0.003601) s, performance: (  596.3) GFLOPS. size: (1024).
+Average elapsed time: (0.003467) s, performance: (  619.3) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
-Average elapsed time: (0.027521) s, performance: (  624.2) GFLOPS. size: (2048).
+Average elapsed time: (0.027535) s, performance: (  623.9) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 ==PROF== Profiling "sgemm_naive" - 0 (1/1): 0%....50%....100% - 20 passes
-Average elapsed time: (0.404332) s, performance: (  339.9) GFLOPS. size: (4096).
+Average elapsed time: (0.218830) s, performance: (  628.1) GFLOPS. size: (4096).
 ```
 
 #### 3060Ti
@@ -171,9 +171,9 @@ Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
 
 ### Global Memory Coalescing - Kernel 2 
 #### 4070Ti
-**534.6 GFLOPs/s**
+**1082.7 GFLOPs/s**
 
-**Performance relative to cuBLAS - 1.91%**
+**Performance relative to cuBLAS - 3.86%**
 
 L1/TEX Cache Throughput (42.28%) & Memory Throughput (42.22%), memory-bound.
 Achieved Occupancy (99.69%).
@@ -182,18 +182,18 @@ Achieved Occupancy (99.69%).
 Running kernel 2 on device 0.
 Max size: 4096
 dimensions(m=n=k) 128, alpha: 0.5, beta: 3
-Average elapsed time: (0.000128) s, performance: (   32.7) GFLOPS. size: (128).
+Average elapsed time: (0.000006) s, performance: (  666.8) GFLOPS. size: (128).
 dimensions(m=n=k) 256, alpha: 0.5, beta: 3
-Average elapsed time: (0.000129) s, performance: (  260.4) GFLOPS. size: (256).
+Average elapsed time: (0.000022) s, performance: ( 1551.8) GFLOPS. size: (256).
 dimensions(m=n=k) 512, alpha: 0.5, beta: 3
-Average elapsed time: (0.000133) s, performance: ( 2024.5) GFLOPS. size: (512).
+Average elapsed time: (0.000118) s, performance: ( 2268.7) GFLOPS. size: (512).
 dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
-Average elapsed time: (0.000940) s, performance: ( 2285.3) GFLOPS. size: (1024).
+Average elapsed time: (0.000873) s, performance: ( 2459.3) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
-Average elapsed time: (0.007091) s, performance: ( 2422.9) GFLOPS. size: (2048).
+Average elapsed time: (0.006945) s, performance: ( 2473.6) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 ==PROF== Profiling "sgemm_coalescing" - 0 (1/1): 0%....50%....100% - 19 passes
-Average elapsed time: (0.257108) s, performance: (  534.6) GFLOPS. size: (4096).
+Average elapsed time: (0.126939) s, performance: ( 1082.7) GFLOPS. size: (4096).
 ```
 
 #### 3060Ti
@@ -225,7 +225,9 @@ Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 
 ### Shared Memory Cache-Blocking - Kernel 3 
 #### 4070Ti
-**1496.4 GFLOPs/s**
+**2514.2 GFLOPs/s**
+
+**Performance relative to cuBLAS - 8.97%**
 
 L1/TEX Cache Throughput (75.43%) & Memory Throughput (75.37%), still memory-bound.
 Achieved Occupancy (99.67%).
@@ -234,18 +236,18 @@ Achieved Occupancy (99.67%).
 Running kernel 3 on device 0.
 Max size: 4096
 dimensions(m=n=k) 128, alpha: 0.5, beta: 3
-Average elapsed time: (0.000127) s, performance: (   33.1) GFLOPS. size: (128).
+Average elapsed time: (0.000004) s, performance: (  962.6) GFLOPS. size: (128).
 dimensions(m=n=k) 256, alpha: 0.5, beta: 3
-Average elapsed time: (0.000131) s, performance: (  256.0) GFLOPS. size: (256).
+Average elapsed time: (0.000014) s, performance: ( 2386.4) GFLOPS. size: (256).
 dimensions(m=n=k) 512, alpha: 0.5, beta: 3
-Average elapsed time: (0.000138) s, performance: ( 1951.8) GFLOPS. size: (512).
+Average elapsed time: (0.000085) s, performance: ( 3153.3) GFLOPS. size: (512).
 dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
-Average elapsed time: (0.000682) s, performance: ( 3147.8) GFLOPS. size: (1024).
+Average elapsed time: (0.000628) s, performance: ( 3419.8) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
-Average elapsed time: (0.005278) s, performance: ( 3255.1) GFLOPS. size: (2048).
+Average elapsed time: (0.004979) s, performance: ( 3450.2) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 ==PROF== Profiling "sgemm_shared_mem_block" - 0 (1/1): 0%....50%....100% - 18 passes
-Average elapsed time: (0.091844) s, performance: ( 1496.4) GFLOPS. size: (4096).
+Average elapsed time: (0.054665) s, performance: ( 2514.2) GFLOPS. size: (4096).
 ```
 
 #### 3060Ti
@@ -287,7 +289,9 @@ Average elapsed time: (0.088520) s, performance: ( 1552.6) GFLOPS. size: (4096).
 
 ### 1D Blocktiling for Calculating Multiple Results per Thread - Kernel 4 
 #### 4070Ti
-**1463.2 GFLOPs/s**
+**9893.8 GFLOPs/s**
+
+**Performance relative to cuBLAS - 35.29%**
 
 L1/TEX Cache Throughput (83.08%) & Memory Throughput (82.16%), still memory-bound.
 Achieved Occupancy (66.31%), limited by the number of registers.
@@ -296,18 +300,18 @@ Achieved Occupancy (66.31%), limited by the number of registers.
 Running kernel 4 on device 0.
 Max size: 4096
 dimensions(m=n=k) 128, alpha: 0.5, beta: 3
-Average elapsed time: (0.000124) s, performance: (   33.8) GFLOPS. size: (128).
+Average elapsed time: (0.000010) s, performance: (  430.7) GFLOPS. size: (128).
 dimensions(m=n=k) 256, alpha: 0.5, beta: 3
-Average elapsed time: (0.000114) s, performance: (  295.6) GFLOPS. size: (256).
+Average elapsed time: (0.000017) s, performance: ( 1924.5) GFLOPS. size: (256).
 dimensions(m=n=k) 512, alpha: 0.5, beta: 3
-Average elapsed time: (0.000131) s, performance: ( 2051.3) GFLOPS. size: (512).
+Average elapsed time: (0.000053) s, performance: ( 5091.9) GFLOPS. size: (512).
 dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
-Average elapsed time: (0.000265) s, performance: ( 8099.7) GFLOPS. size: (1024).
+Average elapsed time: (0.000243) s, performance: ( 8848.8) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
-Average elapsed time: (0.001819) s, performance: ( 9442.6) GFLOPS. size: (2048).
+Average elapsed time: (0.001685) s, performance: (10192.9) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 ==PROF== Profiling "sgemm_1d_blocktiling" - 0 (1/1): 0%....50%....100% - 16 passes
-Average elapsed time: (0.093931) s, performance: ( 1463.2) GFLOPS. size: (4096).
+Average elapsed time: (0.013891) s, performance: ( 9893.8) GFLOPS. size: (4096).
 ```
 
 #### 3060Ti
