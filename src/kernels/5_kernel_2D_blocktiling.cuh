@@ -1,7 +1,5 @@
 #pragma once
 
-#include <__clang_cuda_builtin_vars.h>
-#include <__clang_cuda_runtime_wrapper.h>
 #include <algorithm>
 #include <cassert>
 #include <cstdio>
@@ -57,7 +55,7 @@ __global__ void __launch_bounds__((BM * BN) / (TM * TN), 1)
             }
             for (uint loadOffset = 0; loadOffset < BK; loadOffset += strideB) {
                 Bs[(innerRowB + loadOffset) * BN + innerColB] = 
-                    B[(innerRowB + loadOffset) * K + innerColA];
+                    B[(innerRowB + loadOffset) * N + innerColA];
             }
             __syncthreads();
 
