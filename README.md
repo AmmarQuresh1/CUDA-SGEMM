@@ -65,11 +65,11 @@ The general matrix multiplication formula is defined as: $C = \alpha \cdot (A \c
 Improved performance for kernels 1-3  (~1.95x speedup kernel 1) by changing threads per block from 1024 to 256. 
 This better utilises the 3060Ti's capability of 1536 threads per SM.
 
-### cuBLAS (Reference) 
+## cuBLAS (Reference)
 
 Compute-bound reference.
 
-#### 4070Ti
+### 4070Ti
 **28033.6 GFLOPs/s**
 
 L1/TEX Cache Throughput (58.73%) & Memory Throughput (55.36%). Achieved Occupancy (99.69%).
@@ -92,7 +92,7 @@ Average elapsed time: (0.004903) s, performance: (28033.6) GFLOPS. size: (4096).
 ```
 
 
-#### 3060Ti
+### 3060Ti
 **10691.2 GFLOPs/s**
 
 L1/TEX Cache Throughput (57.95%) & Memory Throughput (57.84%). Achieved Occupancy (33.14%).
@@ -114,10 +114,10 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.012855) s, performance: (10691.2) GFLOPS. size: (4096).
 ```
 
-### Naive - Kernel 1 
+## Naive - Kernel 1
 Uncoalesced access wastes loaded data from GMEM as the warp does not use the entire fetched contiguous sector.
 
-#### 4070Ti
+### 4070Ti
 **628.1 GFLOPs/s**
 
 **Performance relative to cuBLAS - 2.24%**
@@ -142,7 +142,7 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.218830) s, performance: (  628.1) GFLOPS. size: (4096).
 ```
 
-#### 3060Ti
+### 3060Ti
 **282.0 GFLOPs/s**
 
 **Performance relative to cuBLAS - 2.63%**
@@ -167,8 +167,8 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
 ```
 
-### Global Memory Coalescing - Kernel 2 
-#### 4070Ti
+## Global Memory Coalescing - Kernel 2
+### 4070Ti
 **1082.7 GFLOPs/s**
 
 **Performance relative to cuBLAS - 3.86%**
@@ -193,7 +193,7 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.126939) s, performance: ( 1082.7) GFLOPS. size: (4096).
 ```
 
-#### 3060Ti
+### 3060Ti
 **931.1 GFLOPs/s**
 
 **Performance relative to cuBLAS - 8.71%**
@@ -220,8 +220,8 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.147613) s, performance: (  931.1) GFLOPS. size: (4096).
 ```
 
-### Shared Memory Cache-Blocking - Kernel 3 
-#### 4070Ti
+## Shared Memory Cache-Blocking - Kernel 3
+### 4070Ti
 **2514.2 GFLOPs/s**
 
 **Performance relative to cuBLAS - 8.97%**
@@ -246,7 +246,7 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.054665) s, performance: ( 2514.2) GFLOPS. size: (4096).
 ```
 
-#### 3060Ti
+### 3060Ti
 **1552.6 GFLOPs/s**
 
 **Performance relative to cuBLAS - 14.52%**
@@ -283,8 +283,8 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.088520) s, performance: ( 1552.6) GFLOPS. size: (4096).
 ```
 
-### 1D Blocktiling for Calculating Multiple Results per Thread - Kernel 4 
-#### 4070Ti
+## 1D Blocktiling for Calculating Multiple Results per Thread - Kernel 4
+### 4070Ti
 **9893.8 GFLOPs/s**
 
 **Performance relative to cuBLAS - 35.29%**
@@ -309,7 +309,7 @@ dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
 Average elapsed time: (0.013891) s, performance: ( 9893.8) GFLOPS. size: (4096).
 ```
 
-#### 3060Ti
+### 3060Ti
 **4372.3 GFLOPs/s**
 
 **Performance relative to cuBLAS - 40.90%**
