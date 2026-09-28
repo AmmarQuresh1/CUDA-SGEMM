@@ -46,7 +46,7 @@ ncu --import profiles/{report} > profiles/{name}.txt
 | Max configurable shared memory per SM | 0, 8, 16, 32, 64 or 100 KB per SM |
 | Max warps per SM | 48 |
 
----
+
 
 | **Property** | **RTX 3060 Ti (Ampere, compute 8.6)** |
 | --- | --- |
@@ -84,7 +84,6 @@ Average elapsed time: (0.000006) s, performance: ( 5168.5) GFLOPS. size: (256).
 dimensions(m=n=k) 512, alpha: 0.5, beta: 3
 Average elapsed time: (0.000022) s, performance: (12238.3) GFLOPS. size: (512).
 dimensions(m=n=k) 1024, alpha: 0.5, beta: 3
-==PROF== Profiling "ampere_sgemm_128x64_nn" - 0 (1/1): 0%....50%....100% - 16 passes
 Average elapsed time: (0.000099) s, performance: (21638.0) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
 Average elapsed time: (0.000659) s, performance: (26061.3) GFLOPS. size: (2048).
@@ -140,7 +139,6 @@ Average elapsed time: (0.003467) s, performance: (  619.3) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
 Average elapsed time: (0.027535) s, performance: (  623.9) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
-==PROF== Profiling "sgemm_naive" - 0 (1/1): 0%....50%....100% - 20 passes
 Average elapsed time: (0.218830) s, performance: (  628.1) GFLOPS. size: (4096).
 ```
 
@@ -192,7 +190,6 @@ Average elapsed time: (0.000873) s, performance: ( 2459.3) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
 Average elapsed time: (0.006945) s, performance: ( 2473.6) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
-==PROF== Profiling "sgemm_coalescing" - 0 (1/1): 0%....50%....100% - 19 passes
 Average elapsed time: (0.126939) s, performance: ( 1082.7) GFLOPS. size: (4096).
 ```
 
@@ -246,7 +243,6 @@ Average elapsed time: (0.000628) s, performance: ( 3419.8) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
 Average elapsed time: (0.004979) s, performance: ( 3450.2) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
-==PROF== Profiling "sgemm_shared_mem_block" - 0 (1/1): 0%....50%....100% - 18 passes
 Average elapsed time: (0.054665) s, performance: ( 2514.2) GFLOPS. size: (4096).
 ```
 
@@ -310,7 +306,6 @@ Average elapsed time: (0.000243) s, performance: ( 8848.8) GFLOPS. size: (1024).
 dimensions(m=n=k) 2048, alpha: 0.5, beta: 3
 Average elapsed time: (0.001685) s, performance: (10192.9) GFLOPS. size: (2048).
 dimensions(m=n=k) 4096, alpha: 0.5, beta: 3
-==PROF== Profiling "sgemm_1d_blocktiling" - 0 (1/1): 0%....50%....100% - 16 passes
 Average elapsed time: (0.013891) s, performance: ( 9893.8) GFLOPS. size: (4096).
 ```
 
