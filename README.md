@@ -176,6 +176,15 @@ Average elapsed time: (0.487344) s, performance: (  282.0) GFLOPS. size: (4096).
 L1/TEX Cache Throughput (42.28%) & Memory Throughput (42.22%), memory-bound.
 Achieved Occupancy (99.69%).
 
+Performance drops from 2473.6 GFLOPs/s at 2048 to 1082.7 GFLOPs/s at 4096. Profiling one launch at each size shows the matrices no longer fit in the 4070Ti's 48 MB L2 cache:
+
+| Size | L2 Hit Rate | DRAM Read | Duration |
+| --- | ---: | ---: | ---: |
+| 2048 | 97.91% | 94.07 MB | 7.43 ms |
+| 4096 | 44.89% | 13.08 GB | 127.78 ms |
+
+At 2048 the three matrices take up 48 MB (3 x 16 MB) and almost every access hits L2. At 4096 they take up 192 MB, the hit rate halves and the same data is fetched from DRAM over and over. The work is 8x larger but the kernel takes ~17x longer. DRAM throughput is only 20.94% at 4096, so the kernel is stalled waiting on DRAM latency rather than limited by bandwidth. The 3060Ti (4 MB L2) already exceeds its cache at smaller sizes, so it does not show the same drop (1000.8 to 931.1 GFLOPs/s).
+
 ```bash
 Running kernel 2 on device 0.
 Max size: 4096
